@@ -1,0 +1,8 @@
+name: mortgage
+dependencies:
+  - python==3.6
+  - pip
+  - setuptools
+  - ipykernel
+  - matplotlib
+  - numpy
