@@ -66,7 +66,7 @@ class Mortgage:
         return axes
 
     def compare(self, others: list) -> plt.axes:
-        mortgages = others + [self]
+        mortgages = [self] + others
         nr_mortgages = len(mortgages)
         fig, axes = plt.subplots(2, nr_mortgages, figsize=(nr_mortgages * 3, 8), sharey='row')
         for col_axes, mortgage in zip(axes.T, mortgages):

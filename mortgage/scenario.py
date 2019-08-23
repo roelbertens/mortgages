@@ -1,9 +1,41 @@
 from typing import List
+from typing import Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from mortgage.computation import compute_mortgage
+from mortgage.mortgage import Mortgage
+
+
+def find_equal_burden_future_interest(mortgage_a: Mortgage,
+                                      periods_b: List[int],
+                                      interest_rates_b: List[float],
+                                      name_b: str = 'Second mortgage') -> Tuple[float, Mortgage]:
+    """
+    Compare the supplied mortgage to another mortgage of the same size and duration,
+    but with different periods and an unknown interest rate for the last period.
+    The future interest rate for which the two mortgages with different periods will
+    amount to the same burden is returned, together with the second mortgage object.
+
+    :param mortgage_a: mortgage to compare to
+    :param periods_b: periods for the second mortgage
+    :param interest_rates_b: interest rates for the second mortgage, except for the last period
+    :param name_b: name for the second mortgage
+    :return: the future interest rate for which the burden of both mortgages is similar,
+        and the second mortgage object
+    """
+    future_interest_rate = -100
+    while True:
+        mortgage_b = compute_mortgage(periods=periods_b,
+                                      interest_rates=interest_rates_b + [future_interest_rate],
+                                      mortgage_amount=mortgage_a.mortgage_amount,
+                                      mortgage_duration=sum(mortgage_a.periods),
+                                      name=name_b)
+
+        if mortgage_b.burden > mortgage_a.burden:
+            return future_interest_rate, mortgage_b
+        future_interest_rate += .01
 
 
 def plot_interest_scenarios(periods: List[int],

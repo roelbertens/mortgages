@@ -34,16 +34,18 @@ def compute_mortgage(periods: List[int],
 
     for fixed_period, interest in zip(periods, interest_rates):
         monthly_interest = interest / 12
-        annuity = (monthly_interest / (
-                    1 - ((1 + monthly_interest) ** -mortgage_duration))) * remaining_amount
+        if monthly_interest == 0:
+            annuity = remaining_amount / mortgage_duration
+            repayment_fixed_period = annuity * fixed_period
+        else:
+            annuity = (monthly_interest / (1 - ((1 + monthly_interest) ** -mortgage_duration))
+                       ) * remaining_amount
+            first_repayment = annuity - remaining_amount * monthly_interest
+            reason = monthly_interest + 1
+            repayment_fixed_period = first_repayment * (reason ** fixed_period - 1) / (reason - 1)
 
         monthly_fees.append(annuity)
         burden += annuity * fixed_period
-
-        first_repayment = annuity - remaining_amount * monthly_interest
-        reason = monthly_interest + 1
-        repayment_fixed_period = first_repayment * (reason ** fixed_period - 1) / (reason - 1)
-
         remaining_amount -= repayment_fixed_period
         mortgage_duration -= fixed_period
 
